@@ -1,12 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import base64
+from io import BytesIO
+
+import matplotlib.pyplot as plt
 from django.shortcuts import render
+
 from . import models
-# from django.http import HttpResponse
-# from django.http import HttpResponseRedirect
 
 
-# 在Django的views中，每一个响应都由一个函数来处理
+def image(request):
+    # 这段正常画图
+    plt.axis([0, 5, 0, 20])  # [xmin,xmax,ymin,ymax]对应轴的范围
+    plt.title('My first plot')  # 图名
+    plt.plot([1, 2, 3, 4], [1, 4, 9, 16], 'ro')  # 图上的点,最后一个参数为显示的模式
+
+    # 转成图片的步骤
+    sio = BytesIO()
+    plt.savefig(sio, format='png')
+    image_data = base64.b64encode(sio.getvalue()).decode()
+    plt.close()  # 记得关闭，不然画出来的图是重复的
+    return render(request, 'blog/image.html', {'image_data': image_data})
+
 
 def index(request):
     articles = models.Article.objects.all()  # all的返回即为一个列表
