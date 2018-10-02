@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 from __future__ import unicode_literals
 
 import base64
+import json
 from io import BytesIO
 
 import matplotlib.pyplot as plt
+import numpy as np
 from django.shortcuts import render
+from pandas import DataFrame
 
 from . import models
 
@@ -22,6 +26,37 @@ def image(request):
     image_data = base64.b64encode(sio.getvalue()).decode()
     plt.close()  # 记得关闭，不然画出来的图是重复的
     return render(request, 'blog/image.html', {'image_data': image_data})
+
+
+def timezones(request):
+    """
+    Counting time zones with pandas
+    """
+    plt.rc('figure', figsize=(10, 6))
+    np.set_printoptions(precision=4)
+
+    path = 'blog/ch02/usagov_bitly_data2012-03-16-1331923249.txt'
+    lines = open(path).readlines()
+    records = [json.loads(line) for line in lines]
+
+    frame = DataFrame(records)
+
+    # 数据清洗
+    clean_tz = frame['tz'].fillna('Missing')
+    clean_tz[clean_tz == ''] = 'Unknown'
+    tz_counts = clean_tz.value_counts()
+    # print(tz_counts[:10])
+
+    plt.figure(figsize=(10, 4))
+
+    tz_counts[:10].plot(kind='barh', rot=0)  # 绘制水平条状图
+
+    # 转成图片的步骤
+    sio = BytesIO()
+    plt.savefig(sio, format='png')
+    image_data = base64.b64encode(sio.getvalue()).decode()
+    plt.close()  # 记得关闭，不然画出来的图是重复的
+    return render(request, 'blog/timezones.html', {'image_data': image_data})
 
 
 def index(request):
