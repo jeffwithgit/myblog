@@ -7,7 +7,6 @@ import json
 from io import BytesIO
 
 import matplotlib.pyplot as plt
-import numpy as np
 from django.shortcuts import render
 from pandas import DataFrame
 
