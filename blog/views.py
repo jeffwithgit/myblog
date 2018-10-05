@@ -9,6 +9,7 @@ from io import BytesIO
 import matplotlib.pyplot as plt
 from django.shortcuts import render
 from pandas import DataFrame
+import pandas as pd
 
 from . import models
 
@@ -44,14 +45,37 @@ def timezones(request):
 
     # 绘制水平条状图
     tz_counts = clean_tz.value_counts()
-    plt.figure(figsize=(10, 4))
-    tz_counts[:10].plot(kind='barh', rot=0)
+    tz_counts[:10].plot(kind='barh', rot=0, title='Time Zone', figsize=(10, 4))
 
     # 转成图片的步骤
     sio = BytesIO()
     plt.savefig(sio, format='png')
     image_data = base64.b64encode(sio.getvalue()).decode()
+    plt.close()  # 记得关闭，不然不同view画出来的图会相互影响
     return render(request, 'blog/timezones.html', {'image_data': image_data})
+
+
+def devicetypes(request):
+    """
+    Counting device type with pandas
+    """
+    frame = pd.read_csv('blog/ch02/cmdb_201810051456.csv')  # 该csv文件为db导出
+
+    # 数据清洗
+    clean_dt = frame['device_type'].fillna('Missing')
+    clean_dt[clean_dt == ''] = 'Unknown'
+
+    # 绘制水平条状图
+    dt_counts = clean_dt.value_counts()
+    # print(dt_counts)
+    dt_counts[:10].plot(kind='barh', rot=0, title='Device Type', figsize=(10, 4))
+
+    # 转成图片的步骤
+    sio = BytesIO()
+    plt.savefig(sio, format='png')
+    image_data = base64.b64encode(sio.getvalue()).decode()
+    plt.close()  # 记得关闭，不然不同view画出来的图会相互影响
+    return render(request, 'blog/devicetypes.html', {'image_data': image_data})
 
 
 def index(request):
