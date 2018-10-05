@@ -32,9 +32,7 @@ def timezones(request):
     """
     Counting time zones with pandas
     """
-    plt.rc('figure', figsize=(10, 6))
-    np.set_printoptions(precision=4)
-
+    # 数据收集
     path = 'blog/ch02/usagov_bitly_data2012-03-16-1331923249.txt'
     lines = open(path).readlines()
     records = [json.loads(line) for line in lines]
@@ -44,18 +42,16 @@ def timezones(request):
     # 数据清洗
     clean_tz = frame['tz'].fillna('Missing')
     clean_tz[clean_tz == ''] = 'Unknown'
+
+    # 绘制水平条状图
     tz_counts = clean_tz.value_counts()
-    # print(tz_counts[:10])
-
     plt.figure(figsize=(10, 4))
-
-    tz_counts[:10].plot(kind='barh', rot=0)  # 绘制水平条状图
+    tz_counts[:10].plot(kind='barh', rot=0)
 
     # 转成图片的步骤
     sio = BytesIO()
     plt.savefig(sio, format='png')
     image_data = base64.b64encode(sio.getvalue()).decode()
-    plt.close()  # 记得关闭，不然画出来的图是重复的
     return render(request, 'blog/timezones.html', {'image_data': image_data})
 
 
