@@ -29,3 +29,11 @@ python manage.py makemigrations app名（可选）
 ## Django Shell  
 django交互式界面  
 python manage.py shell
+
+## python数据分析
+需要安装的python数据分析库  
+ * ipython
+ * numpy
+ * pandas
+ * scipy
+ * matplotlib
