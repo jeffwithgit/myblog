@@ -6,6 +6,9 @@ import base64
 import json
 from io import BytesIO
 
+import matplotlib
+
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from django.shortcuts import render
 from pandas import DataFrame
