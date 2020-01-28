@@ -5,7 +5,7 @@ Django demo project
 http://127.0.0.1:8000/blog/index/
 
 管理控制台地址
-http://127.0.0.1:8000/admin/
+http://127.0.0.1:8000/admin/  
 admin/xiayang1
 
 ## 安装Django
