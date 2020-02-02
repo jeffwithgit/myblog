@@ -1,5 +1,5 @@
 # myblog
-Django demo project
+内容为Django demo project，主要学习了Django。
 
 前端访问地址
 http://127.0.0.1:8000/blog/index/
